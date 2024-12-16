@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>可翻页的滑动卡片</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="slider-container">
+  <div id="slider" class="slider">
+    <!-- 这里放置你的内容项 -->
+    <div class="slide">内容1</div>
+    <div class="slide">内容2</div>
+    <div class="slide">内容3</div>
+    <!-- 可以继续添加更多项... -->
+  </div>
+  <button id="prev" onclick="moveSlide(-1)">上一页</button>
+  <button id="next" onclick="moveSlide(1)">下一页</button>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
