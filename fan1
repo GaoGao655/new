@@ -1,22 +1,100 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>可翻页的滑动卡片</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>滑动翻页网页</title>
+  <style>
+    /* 页面容器样式 */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* 页面样式 */
+    section {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3em;
+    }
+
+    /* 不同页面设置不同背景色 */
+  .page1 {
+      background-color: red;
+    }
+
+  .page2 {
+      background-color: green;
+    }
+
+  .page3 {
+      background-color: blue;
+    }
+  </style>
 </head>
+
 <body>
-<div class="slider-container">
-  <div id="slider" class="slider">
-    <!-- 这里放置你的内容项 -->
-    <div class="slide">内容1</div>
-    <div class="slide">内容2</div>
-    <div class="slide">内容3</div>
-    <!-- 可以继续添加更多项... -->
-  </div>
-  <button id="prev" onclick="moveSlide(-1)">上一页</button>
-  <button id="next" onclick="moveSlide(1)">下一页</button>
-</div>
-<script src="script.js"></script>
+  <!-- 页面 1 -->
+  <section class="page1">
+    页面 1
+  </section>
+  <!-- 页面 2 -->
+  <section class="page2">
+    页面 2
+  </section>
+  <!-- 页面 3 -->
+  <section class="page3">
+    页面 3
+  </section>
+
+  <script>
+    // 获取所有页面元素
+    const pages = document.querySelectorAll('section');
+    // 当前显示页面索引
+    let currentPage = 0;
+
+    // 监听触摸事件
+    document.addEventListener('touchstart', handleTouchStart, false);
+    document.addEventListener('touchmove', handleTouchMove, false);
+
+    // 触摸起始点坐标
+    let startX;
+    // 触摸移动距离
+    let touchMoveDistance;
+
+    function handleTouchStart(event) {
+      // 获取触摸起始点的横坐标
+      startX = event.changedTouches[0].pageX;
+    }
+
+    function handleTouchMove(event) {
+      // 计算触摸移动的距离
+      touchMoveDistance = event.changedTouches[0].pageX - startX;
+
+      // 根据移动方向和距离判断是否翻页
+      if (touchMoveDistance > 50 && currentPage > 0) {
+        // 向左滑动，上一页
+        currentPage--;
+      } else if (touchMoveDistance < -50 && currentPage < pages.length - 1) {
+        // 向右滑动，下一页
+        currentPage++;
+      }
+
+      // 切换页面显示
+      pages.forEach((page, index) => {
+        if (index === currentPage) {
+          page.style.transform = 'translateX(0)';
+        } else {
+          page.style.transform = 'translateX(100vw)';
+        }
+      });
+    }
+  </script>
 </body>
+
 </html>
