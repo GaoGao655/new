@@ -1,10 +1,39 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>女寝皆是修罗场数据分析可视化</title>
+    <style>
+        /* 设置全局样式 */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* 设置 h1 标题的通用样式，增大字体大小 */
+        h1 {
+            font-size: 24px;
+        }
+
+        /* 为前三张图片对应的 h1 标题设置黄色 */
+        h1:nth-child(-n+3) {
+            color: yellow;
+        }
+
+        /* 为后三张图片对应的 h1 标题设置蓝色 */
+        h1:nth-child(n+4) {
+            color: blue;
+        }
+
+        /* 设置图片样式，限制宽度 */
+        img {
+            max-width: 80%;
+            height: auto;
+        }
+    </style>
 </head>
+
 <body>
     <h1>剧情类型分布饼图</h1>
     <img src="剧情类型分布饼图.png" alt="剧情类型分布饼图">
@@ -19,4 +48,5 @@
     <h1>人物关系网络图</h1>
     <img src="人物关系网络图.png" alt="人物关系网络图">
 </body>
+
 </html>
