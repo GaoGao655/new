@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>女寝皆是修罗场人物可视化</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        /* 通用样式 */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        canvas,
+        #network {
+            max-width: 90%;
+            margin: 0 auto;
+            display: block;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>人物性格特征柱状图</h1>
+    <canvas id="characterTraitsChart"></canvas>
+
+    <h1>人物关系矩阵热力图</h1>
+    <canvas id="relationshipHeatmapChart"></canvas>
+
+    <h1>人物关系网络图</h1>
+    <div id="network"></div>
+
+    <script>
+        // 读取人物性格特征数据
+        const characterTraitsCsv = `人物,善良,心机
+陈钰,1.0,2
+路小染,0.0,3
+丁晨,0.0,2
+唐雨欣,0.0,2
+夏依佟,0.0,1
+徐嘉嘉,0.0,1`;
+
+        const characterTraitsData = {
+            labels: [],
+            datasets: [{
+                label: '善良',
+                data: [],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }, {
+                label: '心机',
+                data: [],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        const characterTraitsRows = characterTraitsCsv.split('\n').slice(1);
+        characterTraitsRows.forEach(row => {
+            const [人物, 善良, 心机] = row.split(',');
+            characterTraitsData.labels.push(人物);
+            characterTraitsData.datasets[0].data.push(parseFloat(善良));
+            characterTraitsData.datasets[1].data.push(parseFloat(心机));
+        });
+
+        // 创建人物性格特征柱状图
+        const characterTraitsChart = new Chart(document.getElementById('characterTraitsChart'), {
+            type: 'bar',
+            data: characterTraitsData,
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '人物性格特征柱状图'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                // 为柱状图添加交互，鼠标悬停时显示数据
+                onHover: (event, elements) => {
+                    if (elements.length > 0) {
+                        const element = elements[0];
+                        const datasetIndex = element.datasetIndex;
+                        const label = characterTraitsData.labels[element.index];
+                        const value = characterTraitsData.datasets[datasetIndex].data[element.index];
+                        const tooltip = `人物: ${label}<br>${characterTraitsData.datasets[datasetIndex].label}: ${value}`;
+                        alert(tooltip);
+                    }
+                }
+            }
+        });
+
+        // 读取人物关系矩阵数据
+        const relationshipCsv = `人物,夏依佟,唐雨欣,丁晨,徐嘉嘉,陈钰,路小染
+唐雨欣,12.0,0.0,8.0,3.0,3.0,7.0
+丁晨,10.0,8.0,0.0,7.0,4.0,8.0
+徐嘉嘉,6.0,3.0,7.0,0.0,4.0,3.0
+陈钰,4.0,3.0,4.0,4.0,0.0,2.0
+路小染,7.0,7.0,8.0,3.0,2.0,0.0
+夏依佟,0.0,12.0,10.0,6.0,4.0,7.0`;
+
+        const relationshipData = {
+            labels: [],
+            datasets: [{
+                label: '人物关系',
+                data: [],
+                backgroundColor: function (context) {
+                    const value = context.dataset.data[context.dataIndex];
+                    return `rgba(${Math.floor(255 - value * 20)}, ${Math.floor(value * 20)}, 0, 0.8)`; // 根据数值生成颜色
+                },
+                borderWidth: 1
+            }]
+        };
+
+        const relationshipRows = relationshipCsv.split('\n').slice(1);
+        relationshipRows.forEach((row, i) => {
+            const values = row.split(',').map(parseFloat);
+            if (i === 0) {
+                relationshipData.labels = values.slice(1);
+            }
+            relationshipData.datasets[0].data.push(values.slice(1));
+        });
+
+        // 创建人物关系矩阵热力图
+        const relationshipHeatmapChart = new Chart(document.getElementById('relationshipHeatmapChart'), {
+            type: 'heatmap',
+            data: relationshipData,
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '人物关系矩阵热力图'
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            callback: function (value) {
+                                return relationshipData.labels[value];
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            callback: function (value) {
+                                return relationshipData.labels[value];
+                            }
+                        }
+                    }
+                },
+                // 为热力图添加交互，鼠标悬停时显示数据
+                onHover: (event, elements) => {
+                    if (elements.length > 0) {
+                        const element = elements[0];
+                        const xLabel = relationshipData.labels[element._index];
+                        const yLabel = relationshipData.labels[element._datasetIndex];
+                        const value = relationshipData.datasets[0].data[element._datasetIndex][element._index];
+                        const tooltip = `人物 ${xLabel} 与 ${yLabel} 的关系值: ${value}`;
+                        alert(tooltip);
+                    }
+                }
+            }
+        });
+
+        // 创建人物关系网络图
+        const nodes = [];
+        const edges = [];
+        relationshipRows.forEach((row, i) => {
+            const values = row.split(',').map(parseFloat);
+            const source = relationshipData.labels[i];
+            nodes.push({ id: source, label: source });
+            values.slice(1).forEach((value, j) => {
+                if (value > 0) {
+                    const target = relationshipData.labels[j];
+                    edges.push({ from: source, to: target, value: value });
+                }
+            });
+        });
+
+        const container = document.getElementById('network');
+        const data = {
+            nodes: nodes,
+            edges: edges
+        };
+        const options = {
+            nodes: {
+                shape: 'dot',
+                size: 20,
+                color: 'lightblue'
+            },
+            edges: {
+                color: 'gray',
+                arrows: 'to'
+            }
+        };
+        const network = new vis.Network(container, data, options);
+
+        // 为人物关系网络图添加交互，点击节点时显示信息
+        network.on('click', function (params) {
+            const node = nodes.find(n => n.id === params.nodes[0]);
+            if (node) {
+                const tooltip = `人物: ${node.label}`;
+                alert(tooltip);
+            }
+        });
+    </script>
+</body>
+
+</html>
