@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>女寝皆是修罗场数据分析可视化</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>剧情类型分布</h1>
+    <canvas id="plotTypeChart"></canvas>
+
+    <h1>前10个高频关键词频次</h1>
+    <canvas id="keywordChart"></canvas>
+
+    <h1>不同剧情类型下的高频关键词频次</h1>
+    <canvas id="keywordByPlotTypeChart"></canvas>
+
+    <script>
+        // 剧情类型分布数据（假设从之前的Python脚本中获取并整理成以下格式）
+        const plotTypeData = {
+            labels: ['非冲突情节', '冲突情节'],
+            datasets: [{
+                data: [86, 29],
+                backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                borderWidth: 1
+            }]
+        };
+
+        // 前10个高频关键词频次数据（假设从之前的Python脚本中获取并整理成以下格式）
+        const keywordData = {
+            labels: ['女寝', '修罗场', '黑黑', '游戏', '剧情', '选项', '攻略', '路小染', '夏依佟', '唐雨欣'],
+            datasets: [{
+                data: [34, 32, 25, 22, 19, 15, 13, 12, 11, 10],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        // 不同剧情类型下的高频关键词频次数据（假设从之前的Python脚本中获取并整理成以下格式）
+        const keywordByPlotTypeData = {
+            labels: ['女寝', '修罗场', '黑黑', '游戏', '剧情'],
+            datasets: [{
+                label: '非冲突情节',
+                data: [28, 25, 20, 18, 15],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }, {
+                label: '冲突情节',
+                data: [6, 7, 5, 4, 4],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        // 创建剧情类型分布饼图
+        const plotTypeChart = new Chart(document.getElementById('plotTypeChart'), {
+            type: 'pie',
+            data: plotTypeData,
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '剧情类型分布'
+                    }
+                }
+            }
+        });
+
+        // 创建前10个高频关键词频次柱状图
+        const keywordChart = new Chart(document.getElementById('keywordChart'), {
+            type: 'bar',
+            data: keywordData,
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '前10个高频关键词频次'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // 创建不同剧情类型下的高频关键词频次分组柱状图
+        const keywordByPlotTypeChart = new Chart(document.getElementById('keywordByPlotTypeChart'), {
+            type: 'bar',
+            data: keywordByPlotTypeData,
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '不同剧情类型下的高频关键词频次'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
