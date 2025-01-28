@@ -4,11 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>女寝皆是修罗场数据分析可视化</title>
+    <title>女寝皆是修罗场人物可视化</title>
+    <!-- 引入 Chart.js 库 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入 Chart.js 的热力图插件 -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-heatmap"></script>
+    <!-- 引入 vis-network 库 -->
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <style>
-        /* 通用样式 */
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -40,157 +43,65 @@
     <div id="network"></div>
 
     <script>
-        // 人物性格特征数据
-        const characterTraitsData = {
-            labels: ['陈钰', '路小染', '丁晨', '唐雨欣', '夏依佟', '徐嘉嘉'],
-            datasets: [{
-                label: '善良',
-                data: [1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }, {
-                label: '心机',
-                data: [2, 3, 2, 2, 1, 1],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
-            }]
-        };
+        document.addEventListener('DOMContentLoaded', function () {
+            // 人物性格特征数据
+            const characterTraitsData = {
+                labels: ['陈钰', '路小染', '丁晨', '唐雨欣', '夏依佟', '徐嘉嘉'],
+                datasets: [
+                    {
+                        label: '善良',
+                        data: [1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '心机',
+                        data: [2, 3, 2, 2, 1, 1],
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            };
 
-        // 创建人物性格特征柱状图
-        const characterTraitsChart = new Chart(document.getElementById('characterTraitsChart'), {
-            type: 'bar',
-            data: characterTraitsData,
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: '人物性格特征柱状图'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                // 为柱状图添加交互，鼠标悬停时显示数据
-                onHover: (event, elements) => {
-                    if (elements.length > 0) {
-                        const element = elements[0];
-                        const datasetIndex = element.datasetIndex;
-                        const label = characterTraitsData.labels[element.index];
-                        const value = characterTraitsData.datasets[datasetIndex].data[element.index];
-                        const tooltip = `人物: ${label}<br>${characterTraitsData.datasets[datasetIndex].label}: ${value}`;
-                        alert(tooltip);
-                    }
-                }
-            }
-        });
-
-        // 人物关系矩阵数据
-        const relationshipData = {
-            labels: ['唐雨欣', '丁晨', '徐嘉嘉', '陈钰', '路小染', '夏依佟'],
-            datasets: [{
-                label: '人物关系',
-                data: [
-                    [0, 12, 8, 3, 3, 7],
-                    [10, 0, 8, 7, 4, 8],
-                    [6, 3, 0, 7, 4, 3],
-                    [4, 3, 4, 0, 2, 4],
-                    [7, 7, 8, 3, 0, 7],
-                    [0, 12, 10, 6, 4, 0]
-                ],
-                backgroundColor: function (context) {
-                    const value = context.dataset.data[context.dataIndex];
-                    return `rgba(${Math.floor(255 - value * 20)}, ${Math.floor(value * 20)}, 0, 0.8)`; // 根据数值生成颜色
-                },
-                borderWidth: 1
-            }]
-        };
-
-        // 创建人物关系矩阵热力图
-        const relationshipHeatmapChart = new Chart(document.getElementById('relationshipHeatmapChart'), {
-            type: 'heatmap',
-            data: relationshipData,
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: '人物关系矩阵热力图'
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            callback: function (value) {
-                                return relationshipData.labels[value];
-                            }
+            // 创建人物性格特征柱状图
+            const characterTraitsChart = new Chart(document.getElementById('characterTraitsChart'), {
+                type: 'bar',
+                data: characterTraitsData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '人物性格特征柱状图'
                         }
                     },
-                    y: {
-                        ticks: {
-                            callback: function (value) {
-                                return relationshipData.labels[value];
-                            }
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    // 鼠标悬停交互
+                    onHover: (event, elements) => {
+                        if (elements.length > 0) {
+                            const element = elements[0];
+                            const datasetIndex = element.datasetIndex;
+                            const label = characterTraitsData.labels[element.index];
+                            const value = characterTraitsData.datasets[datasetIndex].data[element.index];
+                            const tooltip = `人物: ${label}<br>${characterTraitsData.datasets[datasetIndex].label}: ${value}`;
+                            alert(tooltip);
                         }
                     }
-                },
-                // 为热力图添加交互，鼠标悬停时显示数据
-                onHover: (event, elements) => {
-                    if (elements.length > 0) {
-                        const element = elements[0];
-                        const xLabel = relationshipData.labels[element._index];
-                        const yLabel = relationshipData.labels[element._datasetIndex];
-                        const value = relationshipData.datasets[0].data[element._datasetIndex][element._index];
-                        const tooltip = `人物 ${xLabel} 与 ${yLabel} 的关系值: ${value}`;
-                        alert(tooltip);
-                    }
-                }
-            }
-        });
-
-        // 创建人物关系网络图
-        const nodes = [];
-        const edges = [];
-        relationshipData.labels.forEach((label, i) => {
-            nodes.push({ id: label, label: label });
-            relationshipData.datasets[0].data[i].forEach((value, j) => {
-                if (value > 0) {
-                    edges.push({ from: relationshipData.labels[i], to: relationshipData.labels[j], value: value });
                 }
             });
-        });
 
-        const container = document.getElementById('network');
-        const data = {
-            nodes: nodes,
-            edges: edges
-        };
-        const options = {
-            nodes: {
-                shape: 'dot',
-                size: 20,
-                color: 'lightblue'
-            },
-            edges: {
-                color: 'gray',
-                arrows: 'to'
-            }
-        };
-        const network = new vis.Network(container, data, options);
-
-        // 为人物关系网络图添加交互，点击节点时显示信息
-        network.on('click', function (params) {
-            const node = nodes.find(n => n.id === params.nodes[0]);
-            if (node) {
-                const tooltip = `人物: ${node.label}`;
-                alert(tooltip);
-            }
-        });
-    </script>
-</body>
-
-</html>
+            // 人物关系矩阵数据
+            const relationshipData = {
+                labels: ['唐雨欣', '丁晨', '徐嘉嘉', '陈钰', '路小染', '夏依佟'],
+                datasets: [
+                    {
+                        label: '人物关系',
+                        data: [
+                            [0, 12, 8, 3, 3, 7],
+                            [10, 0, 8,
