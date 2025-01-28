@@ -9,6 +9,7 @@
         /* 设置全局样式 */
         body {
             font-family: Arial, sans-serif;
+            text-align: center; /* 使文字和内联元素居中 */
         }
 
         /* 设置 h1 标题的通用样式，增大字体大小 */
@@ -16,9 +17,9 @@
             font-size: 24px;
         }
 
-        /* 为前三张图片对应的 h1 标题设置黄色 */
+        /* 为前三张图片对应的 h1 标题设置更清晰的黄色 */
         h1:nth-child(-n+3) {
-            color: yellow;
+            color: #FFFF00; /* 纯黄色，更清晰 */
         }
 
         /* 为后三张图片对应的 h1 标题设置蓝色 */
@@ -26,10 +27,12 @@
             color: blue;
         }
 
-        /* 设置图片样式，限制宽度 */
+        /* 设置图片样式，进一步缩小宽度 */
         img {
-            max-width: 80%;
+            max-width: 60%; /* 调整为 60%，进一步缩小图片 */
             height: auto;
+            display: block; /* 将图片转换为块级元素 */
+            margin: 0 auto; /* 使图片水平居中 */
         }
     </style>
 </head>
